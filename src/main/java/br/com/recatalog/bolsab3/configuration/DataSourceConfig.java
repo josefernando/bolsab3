@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(entityManagerFactoryRef =  "b3EntityManagerFactory",
-                       basePackages = {"br.com.recatalog.bolsab3.repository"}, transactionManagerRef = "b3TransactionManager")
+                       basePackages = {"br.com.recatalog.bolsab3.model.domain.repository"}, transactionManagerRef = "b3TransactionManager")
 
 public class DataSourceConfig {
 
