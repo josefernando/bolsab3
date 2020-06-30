@@ -25,9 +25,9 @@ public class LoadDadosHistoricosB3 {
 		 * com replace de um caracter de espaço, onde a moeda for "CZ$"		 
 		 */
 		
-		File file = new File("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\COTAHIST_A2020.TXT");
+		File file = new File("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\COTAHIST_D18062020.TXT");
 		
-		Path path = Paths.get("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\COTAHIST_A2020.LOAD");
+		Path path = Paths.get("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\COTAHIST_D18062020.LOAD");
 		BufferedWriter writer = Files.newBufferedWriter(path, Charset.forName("UTF-8"));
 		
 		long count = 0;

@@ -17,4 +17,8 @@ public class CotacaoService {
 	public List<Cotacao> findByPapelAndDate(String papel, String startDate) {
 		return cotacaoRepository.findByPapelAndDate("BBDC4", "2020-06-08");
 	}
+	
+	public List<Cotacao> findByPapelAndBetweenDate(String papel, String startDate, String endDate) {
+		return cotacaoRepository.findByPapelAndBetweenDate(papel, startDate, endDate);
+	}
 }
