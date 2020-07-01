@@ -7,42 +7,49 @@
     <link rel='stylesheet' href='/webjars/font-awesome/css/all.min.css'/>
     <link rel='stylesheet' href='/webjars/chartjs/Chart.css'/>
     <link rel="stylesheet" href="/webjars/select2/css/select2.min.css"  />
-    
-<!--     <link rel='stylesheet' href='/webjars/bootstrap-select/css/bootstrap-select.min.css'/> -->
-    
-    
-<!--     <script src="/webjars/jquery/jquery.min.js"></script> -->
-<!--     <script src="/webjars/popper.js/umd/popper.min.js"></script> -->
-<!--     <script src='/webjars/bootstrap/js/bootstrap.min.js'></script> -->
-<!--     <script src='/webjars/bootstrap-select/js/bootstrap-select.min.js'></script> -->
-<!--     <script src='/webjars/momentjs/min/moment.min.js'></script> -->
-<!--     <script src='/webjars/chartjs/Chart.min.js'></script> -->
-<!--     <script src='/webjars/font-awesome/js/all.min.js'></script> -->
-    
     <title>B3 Statistics</title>
 </head>
 <!--body class="bg-warning "-->
 <body >
-
+    <div class="container ">
+		<nav class="navbar navbar-expand-md p-0 " id="main-menu">
+			<a class="navbar-brand" href="#" 
+			style="color:#63b175;font-family:Arial, Helvetica, sans-serif;
+			font-size: 20px;font-weight:lighter;">
+			<i class="far fa-chart-bar"></i>  b3<span style="font-size: 15px"> Statistics</span></a>
+		</nav>
+	</div>
 <!-- reference 			https://select2.org/getting-started/basic-usage -->
 	<div class="container">
 		<div class="row">
-			<div class="col-md-6  mt-5 d-flex justify-content-center">
-				<select class="js-multiple" name="state" multiple="multiple" style="width:60%;">
-				  <option value="AL">Alabama</option>
-				  <option value="WY">Wyoming</option>
-  				  <option value="NY">New York</option>
-  				  <option value="NJ">New Jersey</option>
-				</select>
-			</div>
+
 			<div class="col-md-6 mt-5 d-flex justify-content-center">
-				<select class="js-single" name="state" style="width:60%;">
-				  <option value="SP">São Paulo</option>
-  				  <option value="RS">Rio Grande do Sul</option>
-  				  <option value="RJ">Rio de Janeiro</option>
-  				  <option value="BA">Bahia</option>
+				<select id="br-states" class="js-single form-control" name="state" style="width:50%;">
+				  <option></option> <!-- contorno para aparecer o 'placeholder e não a 1a. opção  -->
+				  <optgroup label="Sul">
+					  <option value="RS">Rio Grande do Sul</option>
+				  </optgroup>
+				  <optgroup label="Sudeste">
+				  	<option value="SP">São Paulo</option>
+                    <option value="RJ" disabled="disabled">Rio de Janeiro</option>
+				  </optgroup>
+ 				  <optgroup label="Nordeste">
+  				  	<option value="BA">Bahia</option>
+				  </optgroup>
 				</select>
 			</div>
+			
+			<div class="col-md-6  mt-5 d-flex justify-content-center">
+<!-- 				<label for="us-states"> -->
+<!-- 					<span>Escolha na lista abaixo para a contra referência</span> -->
+					<select id="us-states" class="js-multiple form-control" name="state" multiple="multiple" style="width:50%;">
+					  <option value="AL">Alabama</option>
+					  <option value="WY">Wyoming</option>
+	  				  <option value="NY">New York</option>
+	  				  <option value="NJ">New Jersey</option>
+					</select>
+<!-- 				</label> -->
+			</div>			
 		</div>
 	</div>
 
@@ -70,20 +77,15 @@
         </div>
     </div>
 
-<!-- footer -->
-
+<!-- start footer -->
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src='/webjars/bootstrap/js/bootstrap.min.js'></script>
 	<script src="/webjars/select2/js/select2.min.js"></script>
 	<script src='/webjars/momentjs/min/moment.min.js'></script>
     <script src='/webjars/chartjs/Chart.min.js'></script>
     <script src='/webjars/font-awesome/js/all.min.js'></script> 
-<!--     <script src="js/bootstrap-select.min.js"></script>    -->
-<!--     <script src="/webjars/jquery/jquery.min.js"></script> -->
-<!--     <script src="/webjars/popper.js/umd/popper.min.js"></script> -->
-<!--     <script src='/webjars/bootstrap/js/bootstrap.min.js'></script> -->
-<!--     <script src='/webjars/bootstrap-select/js/bootstrap-select.min.js'></script> -->
-
+<!-- end footer -->
+    
 <script>
 	// In your Javascript (external .js resource or <script> tag)
 	$(document).ready(function() {
@@ -91,10 +93,27 @@
 	    	placeholder: 'Selecione a linha referência',
 	    	allowClear: true});
 	    $('.js-multiple').select2({
-	    	placeholder: 'Selecione as barras contra-referência',
+	    	placeholder: 'Selecione as contra-referência',
+	    	maximumSelectionLength: 4,
 	    	allowClear: true
 		    });
 	});
+
+	$('#br-states').on('select2:select', function (e) {
+		var data1 = e.params.data;
+	    console.log("br-states: " + data1);
+		});
+
+	$('#us-states').on('select2:select', function (e) {
+		var data = e.params.data;
+	    console.log("us-states: " + data['text'] + " event type: " + e.type);
+		});
+
+	$('#us-states').on('select2:unselecting', function (evt) {
+		var data2 =evt.params.data;
+		console.log(evt.params.args.data.text);
+	    console.log("us-states: " + data2 + " event type: " + evt.type);
+		});	
 </script>
  
 <script>
@@ -131,10 +150,9 @@
       const url = getUrl('MGLU3');
       const url1 = getUrl('BOVA11');
 //      const url2 = getUrl('TEKA3');
-      const ori = {Host: 'http://localhost:8084'};
 
-      var request = new Request(url, { headers: new Headers({ 'Origin': 'http://localhost:8084' }) }); 
-      var request1 = new Request(url1, { headers: new Headers({ 'Origin': 'http://localhost:8084' }) }); 
+      var request = new Request(url); 
+      var request1 = new Request(url1); 
 
  //     Promise.all([fetch(url,ori).then(retornaDados), fetch(url1,ori).then(retornaDados)])
       Promise.all([fetch(request).then(retornaDados), fetch(request1).then(retornaDados)])
@@ -143,7 +161,6 @@
             console.log('Opss!! erro = ' + error);
             displayError(error);
         });
-
 /*
     fetch(url)
         .then(retornaDados)
