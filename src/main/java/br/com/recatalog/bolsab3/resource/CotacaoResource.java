@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.recatalog.bolsab3.model.domain.Cotacao;
 import br.com.recatalog.bolsab3.service.CotacaoService;
+import br.com.recatalog.bolsab3.service.Data;
 
 @RestController
 @RequestMapping("api/b3")
@@ -25,13 +26,29 @@ public class CotacaoResource {
 	@Autowired
 	 CotacaoService cotacaoService;
 	
+	// ex.:  quotes?fields=field1&fields=field2&start=20200407&end=20200408
 	@GetMapping("quotes")
-	public ResponseEntity<Object> quotes() {
+	public ResponseEntity<Object> quotes(@RequestParam(name = "fields") String[] fields
+            , @RequestParam(name = "start") Optional<String> startDate
+            , @RequestParam(name = "end") Optional<String> endDate ) {
 		
-		List<Cotacao> lista = cotacaoService.findByPapelAndDate("", "");
+		String startDate1 = startDate.orElseGet(() -> null);
+		String endDate1 = endDate.orElseGet(() -> null);
+		
+//		Data data = cotacaoService.findNegotiatedStockSymbolBetweenDates(startDate1, endDate1);
+		Data data = cotacaoService.findNegotiatedPapersBetweenDates(fields[0], startDate1, endDate1);
 
-		return new ResponseEntity<>(lista, HttpStatus.OK);
+		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
+	
+	/*
+	 * @GetMapping("quotes/?fields=name") public ResponseEntity<Object> quotesName()
+	 * {
+	 * 
+	 * List<String> lista = cotacaoService.findNegotiatedPapersByDate("20200407");
+	 * 
+	 * return new ResponseEntity<>(lista, HttpStatus.OK); }
+	 */
 
 	@GetMapping("quotes/{papel}")
 	public ResponseEntity<Object> quotesByPapel(@PathVariable String papel

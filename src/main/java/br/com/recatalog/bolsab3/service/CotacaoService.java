@@ -15,10 +15,24 @@ public class CotacaoService {
 	CotacaoRepository cotacaoRepository;
 	
 	public List<Cotacao> findByPapelAndDate(String papel, String startDate) {
-		return cotacaoRepository.findByPapelAndDate("BBDC4", "2020-06-08");
+		return cotacaoRepository.findByPapelAndDate(papel, startDate);
 	}
 	
 	public List<Cotacao> findByPapelAndBetweenDate(String papel, String startDate, String endDate) {
 		return cotacaoRepository.findByPapelAndBetweenDate(papel, startDate, endDate);
 	}
+	
+	public Data findNegotiatedPapersBetweenDates(String paper, String startDate, String endDate) {
+		return new Data(cotacaoRepository.findNegotiatedPapersBetweenDates(paper, startDate, endDate));
+	}
+	
+	public Data findNegotiatedStockSymbolBetweenDates(String startDate, String endDate) {
+		return new Data(cotacaoRepository.findNegotiatedStockSymbolBetweenDates(startDate, endDate));
+	}	
+	
+
+	
+//	public List<String> findNegotiatedPapersByDate(String date) {
+//		return cotacaoRepository.findNegotiatedPapersByDate(date);
+//	}
 }
