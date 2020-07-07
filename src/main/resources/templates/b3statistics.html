@@ -4,10 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/webjars/jquery-ui/jquery-ui.min.css" />
+    <link rel="stylesheet" href="/webjars/jquery-ui/jquery-ui.theme.min.css" />
+    <link rel="stylesheet" href="/webjars/jquery-ui/jquery-ui.css" />
+    
     <link rel='stylesheet' href='/webjars/font-awesome/css/all.min.css'/>
     <link rel='stylesheet' href='/webjars/chartjs/Chart.css'/>
     <link rel="stylesheet" href="/webjars/select2/css/select2.min.css"  />
     <link rel="stylesheet" href="/css/main.css"  />
+    
+
     
     <title>B3 Statistics</title>
 </head>
@@ -24,7 +30,7 @@
 <!-- reference 			https://select2.org/getting-started/basic-usage -->
 	<div class="container">
 		<div class="row">
-			<div class="col-md-4 mt-5 d-flex justify-content-center">
+			<div class="col-md-3 mt-5 d-flex justify-content-center">
 				<select id="br-states" class="js-single form-control" name="state" style="width:100%;">
 				  <option></option> <!-- contorno para aparecer o 'placeholder e não a 1a. opção  -->
 				  <optgroup label="Sul">
@@ -40,16 +46,16 @@
 				</select>
 			</div>
 			
-			<div class="col-md-4 mt-5 d-flex justify-content-center">
+			<div class="col-md-2 mt-5 d-flex justify-content-center">
 				<select id="stocks" class="js-stocks form-control" name="stock" style="width:100%;">
 				  <option></option> <!-- contorno para aparecer o 'placeholder e não a 1a. opção  -->
 				</select>
 			</div>
 			
-			<div class="col-md-4  mt-5 d-flex justify-content-center">
+			<div class="col-md-3  mt-5 d-flex justify-content-center">
 <!-- 				<label for="us-states"> -->
 <!-- 					<span>Escolha na lista abaixo para a contra referência</span> -->
-					<select id="us-states" class="js-multiple form-control" name="state" multiple="multiple" style="width:100%">
+					<select id="us-states" class="js-multiple form-control form-control-sm " name="state" multiple="multiple" style="width:100%">
 					 				  <option></option> <!-- contorno para aparecer o 'placeholder e não a 1a. opção  -->
 					  <option value="AL">Alabama</option>
 					  <option value="WY">Wyoming</option>
@@ -57,7 +63,13 @@
 	  				  <option value="NJ">New Jersey</option>
 					</select>
 <!-- 				</label> -->
-			</div>			
+			</div>	
+			<div class="col-md-2 mt-5 d-flex justify-content-center">
+				<input type="text" id="datepicker1" class="form-control form-control-sm">
+			</div>	
+			<div class="col-md-2 mt-5 d-flex justify-content-center">
+				<input type="text" id="datepicker2" class="form-control form-control-sm" >
+			</div>		
 		</div>
 	</div>
 
@@ -85,6 +97,7 @@
 
 <!-- start footer -->
     <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/jquery-ui/jquery-ui.min.js"></script>
     <script src='/webjars/bootstrap/js/bootstrap.min.js'></script>
 	<script src="/webjars/select2/js/select2.min.js"></script>
 	<script src='/webjars/momentjs/min/moment.min.js'></script>
@@ -438,15 +451,14 @@ function removeFirst(){
 $(".js-stocks").select2({
     minimumInputLength: 1,
 	ajax: {
-// 	    url: "https://api.github.com/search/repositories",             
 	    url: "http://localhost:8084/api/b3/quotes", //?fields=name&start=20200407&end=20200408",
 	    dataType: 'json',
 	    delay: 500,
 	    data: function (params) {
 	        var query = {
 	    	  fields: params.term,
-	          start: "20200407",
-	          end: "20200408"
+	          start: date01, // format: "yyyymmdd", ex.: "20200406"
+	          end: date02
 	        }
 
 	        // Query parameters will be ?search=[term]&type=public
@@ -488,5 +500,25 @@ function filterItems(query) {
 // 	  templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
 	});
 </script>    
+      <script>
+      // ref: https://api.jqueryui.com/datepicker
+      let date01;
+      let date02;
+  $( function() {
+    $( "#datepicker1" ).datepicker({
+    	onSelect: function() { 
+    		date01 = $(this).datepicker('getDate');
+    		date01 = $.datepicker.formatDate("yy-mm-dd", date01); 
+    	}
+    	});
+    $( "#datepicker2" ).datepicker({
+    	onSelect: function() { 
+    		date02 = $(this).datepicker('getDate');
+    		date02 = $.datepicker.formatDate("yy-mm-dd", date02); 
+    	}
+    });
+    
+  } );
+  </script>
 </body>
 </html>
