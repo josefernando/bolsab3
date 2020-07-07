@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -450,10 +450,23 @@ function removeFirst(){
 
 $(".js-stocks").select2({
     minimumInputLength: 1,
+//    formatInputTooShort: (term, minLength) => string
+    language: { inputTooShort: function(args) {
+	      // args.minimum is the minimum required length
+	      // args.input is the user-typed text
+	      return "Não esqueça de marcar a data Type more stuff";
+	    },
+	    noResults: function() {
+	        return "Ação não Encontrada. Verifique a ação e a data escolhida!";
+	      },
+	      searching: function() {
+	        return "Pesquisando...";
+	      }
+    },
 	ajax: {
 	    url: "http://localhost:8084/api/b3/quotes", //?fields=name&start=20200407&end=20200408",
 	    dataType: 'json',
-	    delay: 500,
+	    delay: 1000,
 	    data: function (params) {
 	        var query = {
 	    	  fields: params.term,
@@ -500,12 +513,13 @@ function filterItems(query) {
 // 	  templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
 	});
 </script>    
-      <script>
+<script>
       // ref: https://api.jqueryui.com/datepicker
       let date01;
       let date02;
   $( function() {
     $( "#datepicker1" ).datepicker({
+    	dateFormat: "DD, dd MM yy",
     	onSelect: function() { 
     		date01 = $(this).datepicker('getDate');
     		date01 = $.datepicker.formatDate("yy-mm-dd", date01); 
@@ -519,6 +533,37 @@ function filterItems(query) {
     });
     
   } );
+  </script>
+  <script>
+  let opts =  {
+		    inputTooShort: function(args) {
+		      // args.minimum is the minimum required length
+		      // args.input is the user-typed text
+		      return "Type more stuff";
+		    },
+		    inputTooLong: function(args) {
+		      // args.maximum is the maximum allowed length
+		      // args.input is the user-typed text
+		      return "You typed too much";
+		    },
+		    errorLoading: function() {
+		      return "Error loading results";
+		    },
+		    loadingMore: function() {
+		      return "Loading more results";
+		    },
+		    noResults: function() {
+		      return "No results found";
+		    },
+		    searching: function() {
+		      return "Searching...";
+		    },
+		    maximumSelected: function(args) {
+		      // args.maximum is the maximum number of items the user may select
+		      return "Error loading results";
+		    }
+		  };
+
   </script>
 </body>
 </html>
