@@ -70,7 +70,7 @@
 <!-- 					<span>Escolha na lista abaixo para a contra referência</span> -->
 				<form class="form-group" style="width:80%">
 					<label for="barra">Barras</label>
-					<select id="barra" class="js-multiple form-control form-control-sm" name="barra" multiple="multiple">
+					<select id="barra" class="js-multiple form-control form-control-sm" name="barras" multiple="multiple">
 <!-- 					  <option></option> contorno para aparecer o 'placeholder e não a 1a. opção  -->
 <!-- 					  <option value="AL">PETR4</option> -->
 <!-- 					  <option value="WY">USIM5</option> -->
@@ -121,10 +121,297 @@
     <script src='/webjars/chartjs/Chart.min.js'></script>
     <script src='/webjars/font-awesome/js/all.min.js'></script> 
 <!-- end footer -->
+
+<script>  // functions 
+function mapToSelect2(elem, indx) {
+	 arrayCount++;  
+//	 console.log($( "#barra option:selected" ).length);
+	 return { "id" : arrayCount,
+		      "text" : elem,
+		      "selected": false
+		 };
+  };
+
+ function preparaDados(dados) {
+     return dados.map(data => {
+       result = (1-(cotacao.precoFechamento/cotacao.precoAbertura))*100;
+               return  parseFloat(result.toFixed(2));          
+     });
+ };
+
+ function setData(startDate,endDate){  // utilização de "closure"
+       return function(name){
+           return 'http://localhost:8084/api/b3/quotes/'+ name + '?start=' + startDate + '&end=' + endDate;
+       };
+ };
+
+ function setDate(startDate,endDate){         // utilização de "closure"
+	  let sDate = startDate;
+	  let eDate = endDate;
+	  let uri   = 'http://localhost:8084/api/b3/quotes?fields=abc';
+     return function(){
+         return uri + '&start=' + startDate + '&end=' + endDate;
+     };
+	};
+
+ function retornaDados(resp){
+       return resp.json();
+ }
+
+ function render(valores){
+       console.log(valores);
+       renderMultipleChart(valores);
+ }
+ 
+ function displayError(error){
+       $("#re-msg-error").append( `<p class='text-danger'>ERRO: ${error}</p>`);
+ }
+
+ function renderChart(data) {
+	    //        console.log(data);
+	            let resultado = data.map(cotacao => {
+	                result = (1-(cotacao.precoFechamento/cotacao.precoAbertura))*100;
+	                return  parseFloat(result.toFixed(2));
+	            });
+//	            console.log(resultado);
+	            var chart = new Chart(ctx, {
+	    // The type of chart we want to create
+	    type: 'bar',
+
+	    // The data for our dataset
+	    data: {
+	        labels: ["011", "02", "03", "04", "05", "06", "07"], 
+	        datasets: [{ 
+	              type: 'bar',
+	              label: 'MGLU3',
+	              backgroundColor: 'rgb(0, 99, 132)',
+	              borderColor: 'rgb(0, 99, 132)',
+	              data: resultado,
+	              order: 2,
+	            }, {
+	              type: 'line',
+	              label: 'BOVA11',
+	              borderColor: 'rgb(255, 0, 0)',
+				  borderWidth: 1,
+	              fill: false,
+	              order: 1,
+	              data: [0.54, 2.34, 1.23, -4.55, 3.21, 5.55, 0.33]
+	            }
+	            /*
+	            ,{ 
+	              type: 'bar',
+	              label: 'OTHER',
+	              backgroundColor: 'rgb(0, 255, 0)',
+	              borderColor: 'rgb(0, 255, 0)',
+	              data:[0.23, 1.34, 6.23, 3.55, 0.21, 2.55, 1.33],
+	              order: 3,
+	            }
+	            */
+	            
+	            ]
+	    },
+	    // Configuration options go here
+	    options: {
+	        scales:{
+	            xAxes: [{
+	                display: true,
+	                scaleLabel: {
+	                    display: true,
+	                    labelString: 'Dia'
+	                }
+	            }],
+	            yAxes: [{
+	                display: true,
+	                scaleLabel: {
+	                    display: true,
+	                    labelString: 'Ganho/Perda'
+	                }
+	            }]
+	        }
+	    }
+//						responsive: true,
+//						title: {
+//							display: true,
+//							text: 'Chart.js Combo Bar Line Chart'
+//						},
+//						tooltips: {
+//							mode: 'index',
+//							intersect: true
+//						}
+//					}
+	});
+	        } 
+
+	function renderMultipleChart(resultados) {
+
+	    let resultadoPorAcao = resultados.map(resultadoStock => {
+	        let resultado = resultadoStock.map(cotacao => {
+	                result = (1-(cotacao.precoFechamento/cotacao.precoAbertura))*100;
+	                return  parseFloat(result.toFixed(2));
+	            });
+	
+	            return resultado;
+	    })
+
+	          var chart = new Chart(ctx, {
+	          // The type of chart we want to create
+	          type: 'bar',
+
+	          // The data for our dataset
+	          data: {
+//	              labels: ['01', '02', '03', '04', '05', '06', '07'],
+	              labels: [
+	                  
+	                      newDate(0),
+	                      newDate(1),
+	                      newDate(2),
+	                      newDate(3),
+	                      newDate(4),
+	                      newDate(5),
+	                      newDate(6)
+	                      
+	                      /*
+	                      newDate1("20200612"),
+	                      newDate1("20200613"),
+	                      newDate1("20200614"),
+	                      newDate1("20200615"),
+	                      newDate1("20200616"),
+	                      newDate1("20200617"),
+	                      newDate1("20200618")
+	      				*/
+	              ],
+	              datasets: [{ 
+	                    type: 'bar',
+	                    label: 'MGLU3',
+	                    backgroundColor: 'rgb(0, 99, 132)',
+	                    borderColor: 'rgb(0, 99, 132)',
+	                    data: resultadoPorAcao[0],
+	                    order: 2,
+	                  }, {
+	                    type: 'line',
+	                    label: 'BOVA11',
+	                    borderColor: 'rgb(255, 0, 0)',
+	      			  borderWidth: 1,
+	                    fill: false,
+	                    order: 1,
+	                    data: resultadoPorAcao[1]
+	                  }
+	                  /*
+	                  ,{ 
+	                    type: 'bar',
+	                    label: 'TEKA3',
+	                    backgroundColor: 'rgb(0, 255, 0)',
+	                    borderColor: 'rgb(0, 255, 0)',
+	                    data:resultadoPorAcao[2],
+	                    order: 3,
+	                  }
+	                  */
+	                  ]
+	          },
+	          // Configuration options go here
+	          options: {
+	              scales:{
+	                  xAxes: [{
+	                      display: true,
+	                      scaleLabel: {
+	                          display: true,
+	                          labelString: 'Dia'
+	                      }
+	                  }],
+	                  yAxes: [{
+	                      display: true,
+	                      scaleLabel: {
+	                          display: true,
+	                          labelString: 'Ganhos/Perdas'
+	                      }
+	                  }]
+	              }
+	          }
+	      });
+	}
+
+	function newDate(days){
+		//ref.: https://momentjs.com/docs/  e https://stackoverflow.com/questions/22547129/momentjs-date-string-add-5-days
+//		    return moment(moment().add('20200621', 'YYYYMMDD').toDate()).format('MMM DD');
+
+		    return moment(moment().add(days, 'd').toDate()).format('MMM DD');
+	}
+
+	function newDate1(date){
+	    //ref.: https://momentjs.com/docs/  e https://stackoverflow.com/questions/22547129/momentjs-date-string-add-5-days
+	    return moment(date).format('MMM DD');
+	}
+
+	function updateChart(){
+		//		    chart.data.datasets[0].data = newdata;
+		//		    chart.data.datasets[1].data = newdata1;
+	      chart.data.labels = ['August', 'September', 'October', 'November', 'December'];
+	    chart.update();
+	};
+
+	function addFirst(){
+	    chart.data.datasets[0].data.unshift(650);
+	    chart.update();
+	}
+
+	function addLast(){
+	    chart.data.datasets[0].data.push(700);
+	    chart.data.labels.push("January");
+	    chart.update();
+	}
+
+	function removeLast(){
+	    chart.data.labels.pop();
+	    chart.update();
+	}
+
+	function filterStock(term){
+		return data.text("world", 12);
+	}
+
+	function removeFirst(){
+	    chart.data.datasets[0].data.shift();
+	    chart.update();
+	}
+
+	function filterItems(query) {
+		  return data.data.map(mapToSelect2).filter(function(el) {
+		      return el.text.indexOf(query) > -1;
+		       })
+	}	
+
+</script>
     
-<script>
+<script>    // handlers
 	// In your Javascript (external .js resource or <script> tag)
+
+	var arrayCount = 0;
 	$(document).ready(function() {
+
+// ==================================================================
+        $.datepicker.regional['pt-BR'] = {
+                closeText: 'Fechar',
+                prevText: '< Anterior',
+                nextText: 'Próximo >',
+                currentText: 'Hoje',
+                monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+                monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun',
+                'Jul','Ago','Set','Out','Nov','Dez'],
+                dayNames: ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'],
+                dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'],
+                dayNamesMin: ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'],
+                weekHeader: 'Sm',
+                dateFormat: 'dd/mm/yy',
+                firstDay: 0,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''};
+        $.datepicker.setDefaults($.datepicker.regional['pt-BR']);	
+// ==================================================================	
+
+	      let date01;
+	      let date02;
 		
 	    $('.js-single').select2({
 	    	placeholder: 'Selecione a linha referência',
@@ -144,440 +431,181 @@
 		});
 	
 	$('#br-states').on('select2:select', function (e) {
-		var data1 = e.params.data;
+		let data1 = e.params.data;
 	    console.log("br-states: " + data['text']);
 		});
 
 	$('#us-states').on('select2:select', function (e) {
-		var data = e.params.data;
+		let data = e.params.data;
 	    console.log("us-states: " + data['text'] + " event type: " + e.type);
 		});
 
 	$('#us-states').on('select2:unselecting', function (evt) {
-		var data2 =evt.params.data;
+		let data2 =evt.params.data;
 // 		console.log(evt.params.args.data.text);
 // 	    console.log("us-states: " + data2 + " event type: " + evt.type);
 		});	
-</script>
- 
-<script>
- function mapToSelect2(elem, indx) {
-	 return { id : indx,
-		      text : elem
-		 };
-   };
 
-  function preparaDados(dados) {
-      return dados.map(data => {
-        result = (1-(cotacao.precoFechamento/cotacao.precoAbertura))*100;
-                return  parseFloat(result.toFixed(2));          
-      });
-  };
-
-  function setData(startDate,endDate){  // utilização de "closure"
-        return function(name){
-            return 'http://localhost:8084/api/b3/quotes/'+ name + '?start=' + startDate + '&end=' + endDate;
-        };
-  };
-
-  function setDate(startDate,endDate){         // utilização de "closure"
-	  let sDate = startDate;
-	  let eDate = endDate;
-	  let uri   = 'http://localhost:8084/api/b3/quotes?fields=abc';
-      return function(){
-          return uri + '&start=' + startDate + '&end=' + endDate;
-      };
-	};
-
-  function retornaDados(resp){
-        return resp.json();
-  }
-
-  function render(valores){
-        console.log(valores);
-        renderMultipleChart(valores);
-  }
-  
-  function displayError(error){
-        $("#re-msg-error").append( `<p class='text-danger'>ERRO: ${error}</p>`);
-  }
-
-      let getUrl = setData('20200612','20200618');
-
-//    const url = 'http://localhost:8084/api/b3/quotes/mglu3?start=20200612&end=20200617';
-
-      const url = getUrl('MGLU3');
-      const url1 = getUrl('BOVA11');
-//      const url2 = getUrl('TEKA3');
-
-      var request = new Request(url); 
-      var request1 = new Request(url1); 
-
- //     Promise.all([fetch(url,ori).then(retornaDados), fetch(url1,ori).then(retornaDados)])
-      Promise.all([fetch(request).then(retornaDados), fetch(request1).then(retornaDados)])
-        .then(render)
-        .catch(error => {
-            console.log('Opss!! erro = ' + error);
-            displayError(error);
-        });
-/*
-    fetch(url)
-        .then(retornaDados)
-        .then(renderChart)
-        .catch((error) => {
-            console.log('Opps!! ' + error);
-        });
-*/
-    var olddata = [0, 10, 5, 2, 20, 30, 45];
-    var newdata = [10, 20, 30, 42, 50, 60, 70];
-
-    var olddata1 = [99, 80, 75, 62, 50, 40, 35];
-    var newdata1 = [5, 10, 55, 15, 20, 55, 25];
-
-    var ctx = document.getElementById('myChart').getContext('2d');
-
-function renderChart(data) {
-    //        console.log(data);
-            let resultado = data.map(cotacao => {
-                result = (1-(cotacao.precoFechamento/cotacao.precoAbertura))*100;
-                return  parseFloat(result.toFixed(2));
-            });
-//            console.log(resultado);
-            var chart = new Chart(ctx, {
-    // The type of chart we want to create
-    type: 'bar',
-
-    // The data for our dataset
-    data: {
-        labels: ["011", "02", "03", "04", "05", "06", "07"], 
-        datasets: [{ 
-              type: 'bar',
-              label: 'MGLU3',
-              backgroundColor: 'rgb(0, 99, 132)',
-              borderColor: 'rgb(0, 99, 132)',
-              data: resultado,
-              order: 2,
-            }, {
-              type: 'line',
-              label: 'BOVA11',
-              borderColor: 'rgb(255, 0, 0)',
-			  borderWidth: 1,
-              fill: false,
-              order: 1,
-              data: [0.54, 2.34, 1.23, -4.55, 3.21, 5.55, 0.33]
-            }
-            /*
-            ,{ 
-              type: 'bar',
-              label: 'OTHER',
-              backgroundColor: 'rgb(0, 255, 0)',
-              borderColor: 'rgb(0, 255, 0)',
-              data:[0.23, 1.34, 6.23, 3.55, 0.21, 2.55, 1.33],
-              order: 3,
-            }
-            */
-            
-            ]
-    },
-    // Configuration options go here
-    options: {
-        scales:{
-            xAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Dia'
-                }
-            }],
-            yAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Ganho/Perda'
-                }
-            }]
-        }
-    }
-//					responsive: true,
-//					title: {
-//						display: true,
-//						text: 'Chart.js Combo Bar Line Chart'
-//					},
-//					tooltips: {
-//						mode: 'index',
-//						intersect: true
-//					}
-//				}
-});
-        }
-//=====================================================================================================
-function renderMultipleChart(resultados) {
-
-//    console.log(resultados);
-
-    let resultadoPorAcao = resultados.map(resultadoStock => {
-
-        let resultado = resultadoStock.map(cotacao => {
-                result = (1-(cotacao.precoFechamento/cotacao.precoAbertura))*100;
-                return  parseFloat(result.toFixed(2));
-            });
-
-            return resultado;
-    })
-
-    var chart = new Chart(ctx, {
-    // The type of chart we want to create
-    type: 'bar',
-
-    // The data for our dataset
-    data: {
-//        labels: ['01', '02', '03', '04', '05', '06', '07'],
-        labels: [
-            
-                newDate(0),
-                newDate(1),
-                newDate(2),
-                newDate(3),
-                newDate(4),
-                newDate(5),
-                newDate(6)
-                
-                /*
-                newDate1("20200612"),
-                newDate1("20200613"),
-                newDate1("20200614"),
-                newDate1("20200615"),
-                newDate1("20200616"),
-                newDate1("20200617"),
-                newDate1("20200618")
-				*/
-        ],
-        datasets: [{ 
-              type: 'bar',
-              label: 'MGLU3',
-              backgroundColor: 'rgb(0, 99, 132)',
-              borderColor: 'rgb(0, 99, 132)',
-              data: resultadoPorAcao[0],
-              order: 2,
-            }, {
-              type: 'line',
-              label: 'BOVA11',
-              borderColor: 'rgb(255, 0, 0)',
-			  borderWidth: 1,
-              fill: false,
-              order: 1,
-              data: resultadoPorAcao[1]
-            }
-            /*
-            ,{ 
-              type: 'bar',
-              label: 'TEKA3',
-              backgroundColor: 'rgb(0, 255, 0)',
-              borderColor: 'rgb(0, 255, 0)',
-              data:resultadoPorAcao[2],
-              order: 3,
-            }
-            */
-            ]
-    },
-    // Configuration options go here
-    options: {
-        scales:{
-            xAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Dia'
-                }
-            }],
-            yAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Ganhos/Perdas'
-                }
-            }]
-        }
-    }
-});
-        }
-//=====================================================================================================        
-
-function newDate(days){
-//ref.: https://momentjs.com/docs/  e https://stackoverflow.com/questions/22547129/momentjs-date-string-add-5-days
-//    return moment(moment().add('20200621', 'YYYYMMDD').toDate()).format('MMM DD');
-
-    return moment(moment().add(days, 'd').toDate()).format('MMM DD');
-}
-
-function newDate1(date){
-    //ref.: https://momentjs.com/docs/  e https://stackoverflow.com/questions/22547129/momentjs-date-string-add-5-days
-    return moment(date).format('MMM DD');
-}
-
-function updateChart(){
-//    chart.data.datasets[0].data = newdata;
-//    chart.data.datasets[1].data = newdata1;
-      chart.data.labels = ['August', 'September', 'October', 'November', 'December'];
-    chart.update();
-};
-
-function addFirst(){
-    chart.data.datasets[0].data.unshift(650);
-    chart.update();
-}
-
-function addLast(){
-    chart.data.datasets[0].data.push(700);
-    chart.data.labels.push("January");
-    chart.update();
-}
-
-function removeLast(){
-    chart.data.labels.pop();
-    chart.update();
-}
-
-function filterStock(term){
-	return data.text("world", 12);
-}
-
-function removeFirst(){
-    chart.data.datasets[0].data.shift();
-    chart.update();
-}
-
-$(".js-stocks").select2({
-    minimumInputLength: 1,
-    placeholder: "Selecione ações da linha!",
-    allowClear: true,
-    language: { inputTooShort: function(args) {
-	      // args.minimum is the minimum required length
-	      // args.input is the user-typed text
-	      return "Não esqueça de marcar a data Type more stuff";
+	$(".js-multiple").select2({
+	    minimumInputLength: 1,
+	    placeholder: "Selecione ações da barra!",
+	    allowClear: true,
+	    language: { inputTooShort: function(args) {
+		      // args.minimum is the minimum required length
+		      // args.input is the user-typed text
+		      return "Escolhas as ações da barra";
+		    },
+		    noResults: function() {
+		        return "Ação não Encontrada. Verifique a ação e a data escolhida!";
+		      },
+		      searching: function() {
+		        return "Pesquisando...";
+		      }
 	    },
-	    noResults: function() {
-	        return "Ação não Encontrada. Verifique a ação e a data escolhida!";
-	      },
-	      searching: function() {
-	        return "Pesquisando...";
-	      }
-    },
-	ajax: {
-	    url: "http://localhost:8084/api/b3/quotes", //?fields=name&start=20200407&end=20200408",
-	    dataType: 'json',
-	    delay: 1000,
-	    data: function (params) {
-	        var query = {
-	    	  fields: params.term,
-	          start: date01, // format: "yyyymmdd", ex.: "20200406"
-	          end: date02
-	        }
+		ajax: {
+		    url: "http://localhost:8084/api/b3/quotes", //?fields=name&start=20200407&end=20200408",
+		    dataType: 'json',
+		    delay: 1000,
+		    data: function (params) {
+		        var query = {
+		    	  fields: params.term,
+		          start: date01, // format: "yyyymmdd", ex.: "20200406"
+		          end: date02
+		        }
 
-	        // Query parameters will be ?search=[term]&type=public
-	        return query;
-	      },
-	    processResults: function (data, params) {
-	      // parse the results into the format expected by Select2
-	      // since we are using custom formatting functions we do not need to
-	      // alter the remote JSON data, except to indicate that infinite
-	      // scrolling can be used
-//	      params.page = params.page || 1;
-	      console.log(data);
-	      console.log(params.term);
-//		  data = resp.json();
+		        // Query parameters will be ?search=[term]&type=public
+		        return query;
+		      },
+		      processResults: function (data, params) {
 
-function filterItems(query) {
-  return data.data.map(mapToSelect2).filter(function(el) {
-//	  console.log(el);
-      return el.text.indexOf(query) > -1;
-       })
-}
+			      console.log(data);
+			      console.log(params.term);
 
-		  let newarray = data.data.map(mapToSelect2);
-//		  let newarray = filterItems("PETR");
 
-	      return {
-		    results: newarray
-//	        results: data.items,
-// 	        pagination: {
-// 	          more: (params.page * 30) < data.total_count
-// 	        }
-	      };
-	    },
-//	    cache: true
-	  }
-// 	  escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-// 	  minimumInputLength: 1,
-// 	  templateResult: formatRepo, // omitted for brevity, see the source of this page
-// 	  templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+// id do "select OPTIONS" não pode repetir. Então o contador
+// sempre inicia a partir da quantidade de options já selecionadas
+			  arrayCount = $("#barra option:selected").length - 1; 
+			  let newarray1 = data.data.map(mapToSelect2);
+
+		      return {
+			    results: newarray1
+		      };
+		    },
+		  }
 	});
 
-$(".js-multiple").select2({
-    minimumInputLength: 1,
-    placeholder: "Selecione ações da barra!",
-    allowClear: true,
-    language: { inputTooShort: function(args) {
-	      // args.minimum is the minimum required length
-	      // args.input is the user-typed text
-	      return "Escolhas as ações da barra";
+	$(".js-stocks").select2({
+	    minimumInputLength: 1,
+	    placeholder: "Selecione ações da linha!",
+	    allowClear: true,
+	    language: { inputTooShort: function(args) {
+		      // args.minimum is the minimum required length
+		      // args.input is the user-typed text
+		      return "Não esqueça de marcar a data Type more stuff";
+		    },
+		    noResults: function() {
+		        return "Ação não Encontrada. Verifique a ação e a data escolhida!";
+		      },
+		      searching: function() {
+		        return "Pesquisando...";
+		      }
 	    },
-	    noResults: function() {
-	        return "Ação não Encontrada. Verifique a ação e a data escolhida!";
-	      },
-	      searching: function() {
-	        return "Pesquisando...";
-	      }
-    },
-	ajax: {
-	    url: "http://localhost:8084/api/b3/quotes", //?fields=name&start=20200407&end=20200408",
-	    dataType: 'json',
-	    delay: 1000,
-	    data: function (params) {
-	        var query = {
-	    	  fields: params.term,
-	          start: date01, // format: "yyyymmdd", ex.: "20200406"
-	          end: date02
-	        }
+		ajax: {
+		    url: "http://localhost:8084/api/b3/quotes", //?fields=name&start=20200407&end=20200408",
+		    dataType: 'json',
+		    delay: 1000,
+		    data: function (params) {
+		        var query = {
+		    	  fields: params.term,
+		          start: date01, // format: "yyyymmdd", ex.: "20200406"
+		          end: date02
+		        }
 
-	        // Query parameters will be ?search=[term]&type=public
-	        return query;
-	      },
-	      processResults: function (data, params) {
-
+		        // Query parameters will be ?search=[term]&type=public
+		        return query;
+		      },
+		    processResults: function (data, params) {
+		      // parse the results into the format expected by Select2
+		      // since we are using custom formatting functions we do not need to
+		      // alter the remote JSON data, except to indicate that infinite
+		      // scrolling can be used
+//		      params.page = params.page || 1;
 		      console.log(data);
 		      console.log(params.term);
-	    	  
-		  let newarray1 = data.data.map(mapToSelect2);
+//			  data = resp.json();
 
-	      return {
-		    results: newarray1
-	      };
-	    },
-	  }
-	});
-</script>    
-<script>
-      // ref: https://api.jqueryui.com/datepicker
-      let date01;
-      let date02;
-  $( function() {
-    $( "#datepicker1" ).datepicker({
+
+
+			  let newarray = data.data.map(mapToSelect2);
+//			  let newarray = filterItems("PETR");
+
+		      return {
+			    results: newarray
+//		        results: data.items,
+//	 	        pagination: {
+//	 	          more: (params.page * 30) < data.total_count
+//	 	        }
+		      };
+		    },
+//		    cache: true
+		  }
+//	 	  escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+//	 	  minimumInputLength: 1,
+//	 	  templateResult: formatRepo, // omitted for brevity, see the source of this page
+//	 	  templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+		});
+
+
+// ref: https://api.jqueryui.com/datepicker	
+    $("#datepicker1").datepicker({
     	dateFormat: "DD, dd MM yy",
     	onSelect: function() { 
     		date01 = $(this).datepicker('getDate');
     		date01 = $.datepicker.formatDate("yy-mm-dd", date01); 
     	}
     	});
-    $( "#datepicker2" ).datepicker({
+	
+    $("#datepicker2").datepicker({
     	onSelect: function() { 
     		date02 = $(this).datepicker('getDate');
     		date02 = $.datepicker.formatDate("yy-mm-dd", date02); 
     	}
     });
-    
-  });
-  </script>
+			
+</script>
+ 
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
 
+    getDataAndRender();
+
+	function getDataAndRender() {
+	      let getUrl = setData('20200612','20200618');
+	
+	//    const url = 'http://localhost:8084/api/b3/quotes/mglu3?start=20200612&end=20200617';
+	
+	      const url = getUrl('MGLU3');
+	      const url1 = getUrl('BOVA11');
+	
+	      var request = new Request(url); 
+	      var request1 = new Request(url1); 
+	
+	      Promise.all([fetch(request).then(retornaDados), fetch(request1).then(retornaDados)])
+	        .then(render)
+	        .catch(error => {
+	            console.log('Opss!! erro = ' + error);
+	            displayError(error);
+	        });
+	
+	    var olddata = [0, 10, 5, 2, 20, 30, 45];
+	    var newdata = [10, 20, 30, 42, 50, 60, 70];
+	
+	    var olddata1 = [99, 80, 75, 62, 50, 40, 35];
+	    var newdata1 = [5, 10, 55, 15, 20, 55, 25];
+	
+//	    var ctx = document.getElementById('myChart').getContext('2d');
+    }
+</script>
+   
 </body>
 </html>
