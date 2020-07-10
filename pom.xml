@@ -53,8 +53,6 @@
 	        <scope>runtime</scope>
 		</dependency>
 
-<!-- Start webjars dependencies -->
-    
 		<dependency>
 		    <groupId>org.webjars</groupId>
 		    <artifactId>webjars-locator</artifactId>
@@ -91,18 +89,6 @@
 		    <version>1.12.1</version>
 		</dependency>
 		
-<!-- 		<dependency> -->
-<!-- 		    <groupId>org.webjars</groupId> -->
-<!-- 		    <artifactId>popper.js</artifactId> -->
-<!-- 		    <version>1.14.7</version> -->
-<!-- 		</dependency>	 -->
-		
-<!-- 		<dependency> -->
-<!-- 		    <groupId>org.webjars</groupId> -->
-<!-- 		    <artifactId>bootstrap-select</artifactId> -->
-<!-- 		    <version>1.13.17</version> -->
-<!-- 		</dependency> -->
-		
 		<dependency>
 		    <groupId>org.webjars</groupId>
 		    <artifactId>momentjs</artifactId>
@@ -115,8 +101,6 @@
 		    <version>2.9.3</version>
 		</dependency>
 			
-<!-- End webjars -->
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

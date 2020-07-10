@@ -90,7 +90,11 @@
 		</div>
 	</div>
 
-    <div class="col-md-6 offset-md-3 py-5">
+	<div class="row container">
+	<div class="col-md-3 py-5" align="center">
+	<button id="bars" class="btn btn-warning">Seleção Barras</button>
+	</div>
+    <div class="col-md-6 py-5">
         <div class="card border-light " style="background-color: #f2f2f2;">
             <div class="card-body" align="center">
                 <h1>Comparativo</h1>
@@ -110,6 +114,7 @@
                 <canvas id="myChart"></canvas>
             </div>
         </div>
+    </div>
     </div>
 
 <!-- start footer -->
@@ -445,6 +450,16 @@ function mapToSelect2(elem, indx) {
 // 		console.log(evt.params.args.data.text);
 // 	    console.log("us-states: " + data2 + " event type: " + evt.type);
 		});	
+
+	$('#bars').on('click', function (evt) {
+			  var select = document.getElementById('barra');
+			  var selected = [...select.options]
+			                    .filter(option => option.selected)
+			                    .map(option => option.text);
+              
+			  alert(selected);
+			  console.log([...select.options].map(elem => elem.innerText));
+		});
 
 	$(".js-multiple").select2({
 	    minimumInputLength: 1,

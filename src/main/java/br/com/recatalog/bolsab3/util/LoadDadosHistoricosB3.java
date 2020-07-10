@@ -25,9 +25,9 @@ public class LoadDadosHistoricosB3 {
 		 * com replace de um caracter de espaço, onde a moeda for "CZ$"		 
 		 */
 		
-		File file = new File("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\COTAHIST_D18062020.TXT");
+		File file = new File("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\COTAHIST_D08072020.TXT");
 		
-		Path path = Paths.get("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\COTAHIST_D18062020.LOAD");
+		Path path = Paths.get("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\COTAHIST_D08072020.LOAD");
 		BufferedWriter writer = Files.newBufferedWriter(path, Charset.forName("UTF-8"));
 		
 		long count = 0;
@@ -58,7 +58,8 @@ public class LoadDadosHistoricosB3 {
 		if(!cotacaoHistorica.startsWith("01")) return null;
 		CotaHistB3 cotacao = new CotaHistB3(cotacaoHistorica);
 		if(cotacao.codigo_negociacao_papel.endsWith("T")) return null;
-		System.out.println(cotacao);
+//		if(Integer.parseInt(cotacao.getData_cotacao()) < 20200619) return null;
+//		System.out.println(cotacao);
 		return cotacao;
 	}
 	
