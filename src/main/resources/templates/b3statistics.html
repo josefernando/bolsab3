@@ -92,7 +92,7 @@
 
 	<div class="row container">
 	<div class="col-md-3 py-5" align="center">
-	<button id="bars" class="btn btn-warning">Seleção Barras</button>
+	<button id="btn-monta-grafico" class="btn btn-warning">Monta Gráfico</button>
 	</div>
     <div class="col-md-6 py-5">
         <div class="card border-light " style="background-color: #f2f2f2;">
@@ -129,9 +129,9 @@
 
 <script>  // functions 
 function mapToSelect2(elem, indx) {
-	 arrayCount++;  
-//	 console.log($( "#barra option:selected" ).length);
-	 return { "id" : arrayCount,
+//	 arrayCount++;  
+//	 return { "id" : arrayCount,
+	 return { "id" : elem,
 		      "text" : elem,
 		      "selected": false
 		 };
@@ -266,7 +266,6 @@ function mapToSelect2(elem, indx) {
 	          data: {
 //	              labels: ['01', '02', '03', '04', '05', '06', '07'],
 	              labels: [
-	                  
 	                      newDate(0),
 	                      newDate(1),
 	                      newDate(2),
@@ -385,12 +384,36 @@ function mapToSelect2(elem, indx) {
 		       })
 	}	
 
+	function updateBarList(name){
+	  var selectElement = document.getElementById('barra');
+	  var selected = [...selectElement.options]
+      .filter(option => option.selected)
+      .map(option_selected => option_selected.text);
+
+///	  arrayCount = 0;
+	  let newArrayx = [];
+	  console.log(selected);
+	  selected.forEach(function (element, index, array) {
+		  if(name !== element ){
+			  newArrayx.push({
+//				  "id" : arrayCount++,
+				  "id" : element,
+				  "text" : element,
+				  "selected": false
+				  })
+		  }
+		});
+
+	  console.log(newArrayx);   
+	  return newArrayx;
+	}
+
 </script>
     
 <script>    // handlers
 	// In your Javascript (external .js resource or <script> tag)
 
-	var arrayCount = 0;
+//	var arrayCount = 0;
 	$(document).ready(function() {
 
 // ==================================================================
@@ -432,8 +455,13 @@ function mapToSelect2(elem, indx) {
 	$('#barra').on('select2:select', function (e) {
 		var barra1 = e.params.data;
 	    console.log("barras: " + barra1.text);
-	    
 		});
+
+	$('#barra').on('select2:unselecting', function (e) {
+//		var newarrayy = updateBarList(e.params.args.data.text);
+//		$('#barra').val(newarrayy);
+		console.log(e.params.args.data.text);
+		});	
 	
 	$('#br-states').on('select2:select', function (e) {
 		let data1 = e.params.data;
@@ -451,14 +479,14 @@ function mapToSelect2(elem, indx) {
 // 	    console.log("us-states: " + data2 + " event type: " + evt.type);
 		});	
 
-	$('#bars').on('click', function (evt) {
-			  var select = document.getElementById('barra');
-			  var selected = [...select.options]
+	$('#btn-monta-grafico').on('click', function (evt) {
+			  var selectElement = document.getElementById('barra');
+			  var selected = [...selectElement.options]
 			                    .filter(option => option.selected)
-			                    .map(option => option.text);
+			                    .map(option_selected => option_selected.text);
               
 			  alert(selected);
-			  console.log([...select.options].map(elem => elem.innerText));
+			  console.log([...selectElement.options].map(elem => elem.innerText));
 		});
 
 	$(".js-multiple").select2({
@@ -499,7 +527,7 @@ function mapToSelect2(elem, indx) {
 
 // id do "select OPTIONS" não pode repetir. Então o contador
 // sempre inicia a partir da quantidade de options já selecionadas
-			  arrayCount = $("#barra option:selected").length - 1; 
+///			  arrayCount = $("#barra option:selected").length - 1; 
 			  let newarray1 = data.data.map(mapToSelect2);
 
 		      return {
